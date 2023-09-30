@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>   
+    <meta name="viewport" content="width=device-width, initial-scale=0">
+    <meta charset="utf-8">
+    <meta name="description" content="Billing Website">
+	  <meta name="keywords" content="web design, affordable web design, professional web design">
+  	<meta name="author" content="Jeyakrishnan">
+    <title>Billing App | History</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" href="img/logo.png">
+    <link rel="stylesheet" type="text/css" href="about.css">
+    <link rel="stylesheet" type="text/css" href="home.css">
+    <script src="home.js"></script>
+</head>
+<body>
+    
+    <div class="container">
+  <div id="loadingOverlay" class="loading-overlay">
+  <div class="loading-spinner"></div>
+</div>
+
+    <div class="custom-welcome-msg">
+  Welcome to <span style="font-weight: bold;">JMart Stores</span>. We're glad to have you here!
+  <div class="running-message">
+    <div class="running-text">
+      This week's Grocery App Maintenance Schedule: Monday 8:00 PM - 10:00 PM, Tuesday 7:30 PM - 9:30 PM, Thursday 6:00 PM - 8:00 PM. For more information, Please contact us at jeyakrishnanofficial@gmail.com.
+    </div>
+  </div>
+</div>
+
+<p></p>
+<!-- Add a div for displaying the delete message -->
+    
+<div class="topButtonContainer">
+   <div id="topNormalButtonSection">
+  <button id="billingPageButton">Start Billing</button>
+  <button id="billHistoryPageButton">Bill History</button>
+  <button id="settingsButton" onclick="">Settings</button>
+  </div>
+  
+  <div id="successMessage" class="success-message">
+ <!--   <span class="close" onclick="closePopup()">&times;</span> -->
+    <p id="successMessageText"><span id="closePopup">&times;</span></p>
+</div>
+  
+  <div class="iconbutton-container">
+    <button id="refreshButton" class="iconbutton"></button>
+    <button id="backtoLoginPageButton" class="iconbutton"></button>
+    <li class="profile-box">
+    <img src="img/profile.png" alt="" class="profile-img">
+    <span class="profile-name">Jeyakrishnan</span>
+    <div class="logout-dropdown" id="logoutDropdown">
+            <button id="welcome-page-button">Welcome Page</button>
+            <button id="account-setup-button">Account Setup</button>
+            <button id="view-predefined-items-button">View Predefined Items</button>
+        
+    </div>
+</li>
+
+  <!--    <button class="logout-btn" onclick="location.href='index.html'">Logout</button> -->
+  </div>
+</div>
+    
+    <div class="gallery">
+    <div class="gallery__item">
+        <img src="img/pgmanager.png" alt="..." class="gallery__image" />
+    </div>
+    <div class="gallery__item">
+        <img src="img/jkart.png" alt="..." class="gallery__image" />
+    </div>
+    <div class="gallery__item">
+        <img src="img/bill.png" alt="..." class="gallery__image" />
+    </div>
+</div>
+<div class="gallery-dots"></div>
+    
+    
+<div id="title">
+<h1></h1>
+    </div>
+    
+    <div class="welcome-page" id="welcomePage">
+       <p id="welcomeMessageText">Welcome</p>
+       <div id="appFeatures">
+            <h3>Discover the Power of Our Billing App:</h3>
+            <ul>
+    <li><span class="feature">Effortless Billing:</span> Create invoices and receipts effortlessly, simplifying your billing process while projecting a professional image.</li>
+    <li><span class="feature">Customer Details Included:</span> Seamlessly integrate customer information into your billing, fostering personalized connections and enhancing customer service.</li>
+    <li><span class="feature">Secure Bill Storage:</span> Store bills locally with unique identifiers like bill numbers and customer names, ensuring easy retrieval and organization.</li>
+    <li><span class="feature">Print On-Demand:</span> Print bills whenever you need, even after saving them, enabling you to serve your customers promptly and professionally.</li>
+    <li><span class="feature">Flexible Advance Payments:</span> Easily include advance payments, providing both you and your customers with financial flexibility.</li>
+    <li><span class="feature">Insights for Informed Choices:</span> Access in-depth reports and analytics to make informed business decisions that propel your success.</li>
+    <li><span class="feature">User-Centric Experience:</span> Navigate our intuitive interface effortlessly, designed to save you valuable time and enhance your efficiency.</li>
+            </ul>
+        </div>
+     </div>
+        
+    <div class="predefined-items" id="predefinedItems">
+    <h1 style="text-align: center;">View Predefined Items</h1>
+
+  <h2 id="itemCountLabel">Your Items: (0 Items)</h2>
+  <table id="userItemsTable">
+    <thead>
+      <tr>
+        <th>Item Name</th>
+        <th>Price</th>
+        <th>Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- User's selected items will appear here -->
+    </tbody>
+  </table>
+  
+<button id="itemAddButton">Add New Item</button>
+
+<!-- The modal overlay (hidden by default) -->
+<div id="hoverOverlay" class="hover-overlay">
+    <!-- Modal content -->
+    <div class="hover-content">
+        <span id="closehoverButton" class="close-hover-button">&times;</span>
+        <h2>Add Your Items:</h2>
+        <input type="text" id="userInputItemName" placeholder="Item Name">
+        <input type="number" id="userInputPrice" placeholder="Price">
+        <input type="number" id="userInputQuantity" placeholder="Quantity">
+        <button id="add-item-button">Add</button>
+    </div>
+</div>
+
+  <button id="delete-item-button">Delete Item</button>
+  <button id="clearall-item-button">Clear All</button>
+    </div>
+    
+  <div class="accountinfo-details" id="accountInfoDetails">
+    <h1 style="text-align: center;">Account Setup</h1>
+        
+    <div class="input-group">
+      <input type="text" id="userNameInput" class="input-group_input" required />
+      <label for="userNameInput" class="input-group_label">User Name<span class="required">*</span></label>
+    </div>
+    <div class="input-group">
+      <input type="text" id="userPhoneNumberInput" class="input-group_input" required />
+      <label for="userPhoneNumberInput" class="input-group_label">User Mobile Number</label>
+    </div> 
+    <div class="input-group">
+      <input type="text" id="userShopNameInput" class="input-group_input" required />
+      <label for="userShopNameInput" class="input-group_label">Shop Name</label>
+    </div> 
+    <div class="input-group">
+      <input type="text" id="userShopAddressInput" class="input-group_input" required />
+      <label for="userShopAddressInput" class="input-group_label">Shop Address</label>
+    </div> 
+    <div class="input-group">
+      <input type="text" id="userThankYouNoteInput" class="input-group_input" required />
+      <label for="userThankYouNoteInput" class="input-group_label">Thank You Note</label>
+    </div> 
+    <div class="input-group">
+      <label for="cashierName" class="input-group_label_top">Cashier Name</label>
+      <select id="cashierName" class="input-group_input" required>
+        <option value="">Select Cashier Name</option>
+        <option value="Jey">Jey</option>
+        <option value="Krishna">Krishna</option>
+        <option value="JK">JK</option>
+        <!-- Add more names as needed -->
+      </select>
+    </div> 
+    
+    <button id="save-userdetails-button">Save</button>
+  </div>  
+  
+    
+    <div class="homePageFooter">
+      &copy; 2023 Jey Products, All Rights Reserved.
+    </div>
+
+  </div>
+  
+
+</body>
+</html>

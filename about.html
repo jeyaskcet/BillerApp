@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>   
+    <meta name="viewport" content="width=device-width, initial-scale=0">
+    <meta charset="utf-8">
+    <meta name="description" content="Billing Website">
+	  <meta name="keywords" content="web design, affordable web design, professional web design">
+  	<meta name="author" content="Jeyakrishnan">
+    <title>Billing App | Main Page</title> 
+    <link rel="icon" href="img/logo.png">
+    <script src="about.js"></script>
+    <link rel="stylesheet" href="about.css">
+</head>
+<body>
+    
+    <div id="backupContent" style="display: none;"></div>
+    <div class="container">
+  <div id="loadingOverlay" class="loading-overlay">
+  <div class="loading-spinner"></div>
+</div>
+
+    <div class="custom-welcome-msg">
+  Welcome to <span style="font-weight: bold;">JMart Stores</span>. We're glad to have you here!
+  <div class="running-message">
+    <div class="running-text">
+      This week's Billing App Maintenance Schedule: Monday 8:00 PM - 10:00 PM, Tuesday 8:30 PM - 9:45 PM, Thursday 6:00 PM - 8:00 PM. For more information, Please contact us at jeyakrishnanofficial@gmail.com.
+    </div>
+  </div>
+</div>
+
+<p></p>
+
+ <div class="topButtonContainer">
+  <div id="topNormalButtonSection">
+    <button onclick="enterCustomerDetails()">Enter Customer Details</button>
+    <select id="viewSavedBills" onchange="viewSelectedSavedBills()">
+      <option value="" disabled selected>View Saved Bills</option>
+    </select>
+    <button id="billHistoryButton" onclick="navigateTobillHistoryPage()">Bill History</button>
+    <div id="accountName" class="session-name"></div>
+  </div>
+  <div class="iconbutton-container">
+    <button id="refreshButton" class="iconbutton" onclick="refreshPage()"></button>
+    <button id="backtoHomePageButton" class="iconbutton" onclick="navigateToHome()"></button>
+    <button id="backtoLoginPageButton" class="iconbutton" onclick="navigateToLogout()"></button>
+    <li class="profile-box">
+      <img src="img/profile.png" alt="" class="profile-img">
+      <span class="profile-name" id="session-name">Jeyakrishnan</span>
+      <div class="logout-dropdown">
+        <button class="logout-btn" onclick="location.href='index.html'">Logout</button>
+    </div>
+  </div>
+</div>
+
+  <div class="modal" id="savedBillsModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeViewSavedBills()">&times;</span>
+    <div class="print-header">
+      <h2>JMart Stores</h2>
+      <p>Elayirampannai</p>
+    </div>
+  <div id="savedBillsContent">
+    <!-- Bill history content will be generated dynamically using JavaScript -->
+    
+    </div>    
+    <button onclick="editSavedBills()">Edit</button>
+    <button onclick="removeSavedBill()">Remove</button>
+  </div>
+    </div>
+
+  <div class="customer-details" id="customerDetails">
+    <h3>Enter Customer Details</h3>
+    <div class="input-group">
+      <input type="text" id="customerNameInput" class="input-group_input" required />
+      <label for="customerNameInput" class="input-group_label">Customer Name<span class="required">*</span></label>
+    </div>
+    <div class="input-group">
+      <input type="number" id="phoneNumberInput" class="input-group_input" required />
+      <label for="phoneNumberInput" class="input-group_label">Phone Number</label>
+    </div>
+    
+    <div class="input-group">
+      <label for="cashierName" class="input-group_label_top">Cashier Name</label>
+      <select id="cashierName" class="input-group_input" required>
+        <option value="">Select Cashier Name</option>
+        <option value="Jey">Jey</option>
+        <option value="Krishna">Krishna</option>
+        <option value="JK">JK</option>
+        <!-- Add more names as needed -->
+      </select>
+    </div>
+     <button class="submit-button" onclick="submitCustomerDetails()">Submit</button>
+  </div>    
+
+    <div class="items-input-container">
+    <div class="items-input-group">
+      <input type="text" id="itemName" class="input-group_input" oninput="suggestItem()" required />
+      <label for="itemName" class="input-group_label">Item Name</label>
+      <div id="suggestionContainer" class="suggestion-container"></div>
+    </div>
+
+    <div class="items-input-group">
+      <input type="number" id="itemQuantity" class="input-group_input" required />
+      <label for="itemQuantity" class="input-group_label">Item Quantity</label>
+    </div>
+
+    <div class="items-input-group">
+      <input type="number" id="itemPrice" class="input-group_input" required />
+      <label for="itemPrice" class="input-group_label">Item Price</label>
+    </div>
+    
+    <button class="add-item-button" onclick="addItem()">Add</button>
+  </div>
+ 
+  <div class="customer-details" id="customerDetails">
+    <h3>Enter Customer Details</h3>
+    <label for="customerName">Customer Name:</label>
+    <input type="text" id="customerNameInput"><br>
+    <label for="phoneNumber">Phone Number:</label>
+    <input type="text" id="phoneNumberInput">
+    <button onclick="submitCustomerDetails()">Submit</button>
+  </div>
+
+<div id="printableDetails">
+<div class="billSummaryTitle">Bill Summary</div>
+<div class="amountInfo">
+<p>Bill Number: <span id="billNumber"></span></p>
+<p>Date: <span id="currentDate"></span></p>
+<p>Time: <span id="timeStamp"></span></p>
+<p>Customer Name: <span id="customerName"></span> | Phone Number: <span id="phoneNumber"></span></p>
+</div>
+<p></p>
+  <table id="itemTable">
+    <tr>
+      <th>Serial Number</th>
+      <th>Item Name</th>
+      <th>Item Quantity</th>
+      <th id="perUnitPriceHeader">Per Unit Price</th>
+      <th>Item Price</th>
+    </tr>
+  </table>
+<p></p>
+  <div class="amountInfo">
+   <p>Total Bill Amount: <span id="totalAmount">₹0.00</span></p>
+  <p>(-) Advance Amount: <span id="advanceAmountDisplay">₹0.00</span></p>
+  <p>Bill Amount Due: <span id="billAmountDue">₹0.00</span></p>
+  <p>Cashier: <span id="cashier"></span></p>
+  <input type="hidden" id="billStatus" value="Saved">
+ </div>
+</div>
+  
+  <div class="bottomButtonsection">
+  <button class="add-advance-button" onclick="addAdvanceAmount()">Add Advance Amount</button>
+  <button class="remove-item-button" onclick="removeItem()">Remove Item</button>
+  
+ <!-- <button class="calculate-total-button" onclick="calculateTotal()">Calculate Total Amount</button>
+  <button class="print-pdf-button" onclick="saveAsPDF()">Save as PDF</button> -->
+  
+ <button class="print-preview-button" onclick="showPrintPreview()">Show Bill Preview</button>
+  <button class="save-bill-button" id="saveBill" onclick="saveBill()">Save Bill</button>
+  <button class="print-button" onclick="printSummary()">Print Page</button>
+    <input type="checkbox" id="showPerUnitPrice" checked onchange="togglePerUnitPrice()">
+    <label for="showPerUnitPrice">Show Per Unit Price</label>
+  </div>
+  
+  <div class="modal" id="printPreviewModal">
+  <div class="modal-content">
+    <span class="close" onclick="closePrintPreview()">&times;</span>
+    <div class="print-header">
+      <h2>JMart Stores</h2>
+      <p>Elayirampannai</p>
+    </div>
+    <div id="printPreviewContent">
+      <!-- Content of the print preview will be inserted here -->
+    </div>
+    <div id="printPreviewFooter">
+    <div id="paymentseal">
+    <img src="img/paidseal.png" alt="Paid Seal" class="paid-seal-image">
+    <p>Payment Status: <span class="payment-status">Pending</span></p>
+    </div>
+    <div class="print-footer">
+      <p>Thank you for shopping at JMart Stores!</p>
+    </div>
+    </div>
+    <button class="print-button" onclick="printHoverPage()">Print</button>
+    <button class="print-button" onclick="saveDoneBillHistory()">Done</button>
+    <button class="mark-paid-button" onclick="markPaid()">Mark Paid</button>
+  </div>
+  </div>
+  <p></p>
+<div class="footer">
+      &copy; 2023 Jey Products, All Rights Reserved.
+    </div>
+  </div>
+</body>
+</html>
