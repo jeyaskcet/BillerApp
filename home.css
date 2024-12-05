@@ -70,6 +70,17 @@
     margin: 20px auto;
 }
 
+.userdefined-items {
+    display: none;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    width: 80%; /* Adjust width as needed */
+    margin: 20px auto;
+}
+
 label {
   display: block;
   margin-bottom: 5px;
@@ -282,3 +293,18 @@ table tbody tr.predefined td::before {
       margin-top: 200px;
     }
     
+#dataContainer {
+            width: 1px;
+            height: 1px;
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            overflow: hidden;
+        }
+#prevButton {
+  background-image: url('img/prevButton.png');
+}
+
+#nextButton {
+  background-image: url('img/nextButton.png');
+}

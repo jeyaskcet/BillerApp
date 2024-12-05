@@ -1,16 +1,52 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Predefined items
+    const items = [
+        { name: "Item 1", price: 10, quantity: 1 },
+        { name: "Item 2", price: 15, quantity: 1 },
+        { name: "Item 3", price: 20, quantity: 1 },
+        { name: "Item 4", price: 25, quantity: 1 },
+        { name: "Item 5", price: 30, quantity: 1 },
+        { name: "Item 6", price: 35, quantity: 1 },
+        { name: "Item 7", price: 40, quantity: 1 },
+        { name: "Item 8", price: 45, quantity: 1 },
+        { name: "Item 9", price: 50, quantity: 1 },
+        { name: "Item 10", price: 100, quantity: 1 },
+        // Add more items as needed
+    ];
     
-const itemsPerPage = 15;
-let currentPage = 0;
-let allItems = []; 
-let savedUserItems = JSON.parse(localStorage.getItem("userItems")) || [];
-let items = ""
+    
+    
+    
+    
+    
+    
+       
+            const loadDataButton = document.getElementById('loadDataButton');
+            loadDataButton.addEventListener("click", fetchPredefinedItems);
 
-    // Initially, set the first dot as active
-    updateProfileUserName();
+
+        
     
-     
-const saveDataButton = document.getElementById('saveDataButton');
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    // Initialize savedUserItems with data from local storage or an empty array
+    let savedUserItems = JSON.parse(localStorage.getItem("userItems")) || [];
+
+    // Combine predefined and saved user items
+    let allItems = [...items, ...savedUserItems];
+
 const addButton = document.getElementById("add-item-button");
 const deleteButton = document.getElementById("delete-item-button");
 const clearAllButton = document.getElementById("clearall-item-button");
@@ -21,18 +57,15 @@ const closePopupMessage = document.getElementById("closePopup");
 const userDetailsSaveButton = document.getElementById("save-userdetails-button");
 const accountSetupButton = document.getElementById("account-setup-button");
 const viewPredefinedItemsButton = document.getElementById("view-predefined-items-button");
-const viewUserdefinedItemsButton = document.getElementById("view-userdefined-items-button");
 const welcomePageButton = document.getElementById("welcome-page-button");
 const refreshButton = document.getElementById("refreshButton");
 const logoutButton = document.getElementById("backtoLoginPageButton");
 const billingPageButton = document.getElementById("billingPageButton");
 const billHistoryButton = document.getElementById("billHistoryPageButton");
-const prevButton = document.getElementById("prevButton");
-const nextButton = document.getElementById("nextButton");
 
+fetchUserDetails();
 
     // Attach event listeners to the buttons
-    saveDataButton.addEventListener("click", saveallItems);
     addButton.addEventListener("click", addUserItem);
     deleteButton.addEventListener("click", deleteUserItem);
     clearAllButton.addEventListener("click", DeleteUserItemsToLocalStorage);
@@ -42,17 +75,12 @@ const nextButton = document.getElementById("nextButton");
    userDetailsSaveButton.addEventListener("click", saveUserDetails);
    accountSetupButton.addEventListener("click", displayAccountSetup);
    viewPredefinedItemsButton.addEventListener("click", displayViewPredefinedItems);
-   viewUserdefinedItemsButton.addEventListener("click", displayViewUserdefinedItems);
    welcomePageButton.addEventListener("click", displayWelcomePage);
    refreshButton.addEventListener("click", refreshPage);
    logoutButton.addEventListener("click", navigateToLoginPage);
    billingPageButton.addEventListener("click", billingPage);
    billHistoryButton.addEventListener("click", billHistoryPage);
-    prevButton.addEventListener("click", clickPrevButton);  
-    nextButton.addEventListener("click", clickNextButton);
     
-    
-function updateProfileUserName() {
     // Update the profile box with the username
     var username = localStorage.getItem("username");
     var profileNameElement = document.querySelector(".profile-name");
@@ -62,11 +90,21 @@ function updateProfileUserName() {
         welcomePageMsg.textContent = "Welcome " + username + "!";
     }
 
-}
 
-    
-const gallery = document.querySelector(".gallery");
-const galleryDots = document.querySelector(".gallery-dots");
+    // Load user-added items from Local Storage on page load
+    const userItemsTable = document.getElementById("userItemsTable");
+    const userItemsTableBody = userItemsTable.querySelector("tbody");
+    allItems.forEach((item) => {
+        const row = userItemsTableBody.insertRow();
+        row.insertCell(0).textContent = item.name;
+        row.insertCell(1).textContent = item.price || "";
+        row.insertCell(2).textContent = item.quantity || "";
+    });
+
+
+    const gallery = document.querySelector(".gallery");
+    const galleryDots = document.querySelector(".gallery-dots");
+
     gallery.addEventListener("scroll", updateActiveDot);
 
 function updateActiveDot() {
@@ -103,9 +141,34 @@ function scrollToItem(index) {
         });
     }
 
- // Initially, set the first dot as active
+    // Initially, set the first dot as active
     updateActiveDot();
     updateItemCountLabel();
+
+function suggestItem() {
+        const itemNameInput = document.getElementById("itemName");
+        const suggestionContainer = document.getElementById("suggestionContainer");
+
+        suggestionContainer.innerHTML = "";
+
+        const userInput = itemNameInput.value.trim().toLowerCase();
+
+        if (userInput !== "") {
+            const matchingItems = allItems.filter((item) =>
+                item.name.toLowerCase().includes(userInput)
+            );
+
+            matchingItems.forEach((item) => {
+                const suggestion = document.createElement("div");
+                suggestion.classList.add("suggestion");
+                suggestion.textContent = item.name;
+
+                suggestion.addEventListener("click", () => selectSuggestion(item));
+
+                suggestionContainer.appendChild(suggestion);
+            });
+        }
+    }
 
 
 // Function to open the modal
@@ -138,14 +201,14 @@ function addUserItem() {
             document.getElementById("userInputItemName").value = ""; // Clear the item name field
             document.getElementById("userInputPrice").value = ""; // Clear the price field
             document.getElementById("userInputQuantity").value = ""; // Clear the quantity field
-            saveUserItemsToLocalStorage();
             refreshUserItemsTable();
+            saveUserItemsToLocalStorage();
             closeModal();
             showSuccessMessage(userInputItemName, "Added");
         }
     }
 
-function updateItemCountLabel_old() {
+function updateItemCountLabel() {
     const userItemsTable = document.getElementById("userItemsTable");
     const userItemsTableBody = userItemsTable.querySelector("tbody");
     const itemCountLabel = document.getElementById("itemCountLabel");
@@ -167,20 +230,38 @@ function deleteUserItem() {
 
         if (itemToDelete !== "") {
             // Check if the item is predefined
+            const isPredefined = items.some((item) =>
+                item.name.toLowerCase() === itemToDelete
+            );
+
+            if (isPredefined) {
+                alert("You can't delete predefined items.");
+            } else {
                 const index = savedUserItems.findIndex((item) =>
                     item.name && item.name.toLowerCase() === itemToDelete
-               );
+                );
 
                 if (index !== -1) {
                     savedUserItems.splice(index, 1); // Remove the item
+                    refreshUserItemsTable();
                     saveUserItemsToLocalStorage();
-refreshUserItemsTable();
-showSuccessMessage(itemToRemove, "Deleted");
+                   // alert("Item deleted successfully.");
+        showSuccessMessage(itemToRemove, "Deleted");
                 } else {
                     alert("Please enter the correct item name.");
                 }
             }
-        
+        }
+    }
+
+function selectSuggestion(item) {
+        const userItemsTableBody = document.getElementById("userItemsTable").querySelector("tbody");
+        const row = userItemsTableBody.insertRow();
+        row.insertCell(0).textContent = item.name;
+        row.insertCell(1).textContent = item.price || "";
+        row.insertCell(2).textContent = item.quantity || "";
+        document.getElementById("itemName").value = ""; // Clear the input field
+        document.getElementById("suggestionContainer").innerHTML = ""; // Clear suggestions
     }
 
 function refreshUserItemsTable() {
@@ -193,25 +274,11 @@ function refreshUserItemsTable() {
             row.insertCell(2).textContent = item.quantity || "";
         });
         updateItemCountLabel();
-        displayItems(currentPage);
     }
-    
 
 function saveUserItemsToLocalStorage() {
         localStorage.setItem("userItems", JSON.stringify(savedUserItems));
     }
-    
-function saveallItems() {
-    // First, get the existing items from local storage
-    
-    localStorage.removeItem("totalItems");
-    
-    let totalItems = [...allItems, ...savedUserItems];
-
-    // Save the merged items back to local storage
-    localStorage.setItem("totalItems", JSON.stringify(totalItems));
-}
-
 
 function DeleteUserItemsToLocalStorage() {
         const confirmation = confirm("Are you sure you want to delete all your user-defined items? This action cannot be undone.");
@@ -243,7 +310,6 @@ function closePopup() {
     var successMessage = document.getElementById("successMessage");
     successMessage.style.display = "none";
 }
-
 function saveUserDetails() {
     const userNameInput = document.getElementById("userNameInput").value;
     const userPhoneNumberInput = document.getElementById("userPhoneNumberInput").value;
@@ -306,10 +372,7 @@ function displayAccountSetup() {
     var viewPredefinedItems = document.getElementById("predefinedItems");
     viewPredefinedItems.style.display = "none";
     var viewDisplayAccountSetup = document.getElementById("accountInfoDetails");
-    var viewUserdefinedItems = document.getElementById("userdefinedItems");
-    viewUserdefinedItems.style.display = "none";
     viewDisplayAccountSetup.style.display = "block";
-    fetchUserDetails();
 }
 
 function displayViewPredefinedItems() {
@@ -318,24 +381,9 @@ function displayViewPredefinedItems() {
     viewWelcomePage.style.display = "none";
     var viewDisplayAccountSetup = document.getElementById("accountInfoDetails");
     viewDisplayAccountSetup.style.display = "none";
-    var viewUserdefinedItems = document.getElementById("userdefinedItems");
-    viewUserdefinedItems.style.display = "none";
     var viewPredefinedItems = document.getElementById("predefinedItems");
     viewPredefinedItems.style.display = "block";
     fetchPredefinedItems();
-}
-
-function displayViewUserdefinedItems() {
-    
-    var viewWelcomePage = document.getElementById("welcomePage");
-    viewWelcomePage.style.display = "none";
-    var viewDisplayAccountSetup = document.getElementById("accountInfoDetails");
-    viewDisplayAccountSetup.style.display = "none";
-    var viewPredefinedItems = document.getElementById("predefinedItems");
-    viewPredefinedItems.style.display = "none";
-    var viewUserdefinedItems = document.getElementById("userdefinedItems");
-    viewUserdefinedItems.style.display = "block";
-    fetchUserdefinedItems();
 }
 
 function displayWelcomePage() {
@@ -344,8 +392,6 @@ function displayWelcomePage() {
     viewDisplayAccountSetup.style.display = "none";
     var viewPredefinedItems = document.getElementById("predefinedItems");
     viewPredefinedItems.style.display = "none";
-    var viewUserdefinedItems = document.getElementById("userdefinedItems");
-    viewUserdefinedItems.style.display = "none";
     var viewWelcomePage = document.getElementById("welcomePage");
     viewWelcomePage.style.display = "block";
 }
@@ -374,7 +420,6 @@ function refreshPage() {
    }
    
 function billingPage() {
-  accessData();
   showLoading();
   setTimeout(function() {
     window.location.href = "about.html";
@@ -400,11 +445,11 @@ function fetchPredefinedItems_old() {
                     
                     if (dataScript) {
                         const items = JSON.parse(dataScript.textContent);
-                        let allItems = [...items, ...savedUserItems];
+                        let allItems1 = [...items, ...savedUserItems];
                         
                            const userItemsTable = document.getElementById("userItemsTable");
     const userItemsTableBody = userItemsTable.querySelector("tbody");
-    allItems.forEach((item) => {
+    allItems1.forEach((item) => {
         const row = userItemsTableBody.insertRow();
         row.insertCell(0).textContent = item.name;
         row.insertCell(1).textContent = item.price || "";
@@ -418,52 +463,46 @@ function fetchPredefinedItems_old() {
             }
         
 
-function fetchPredefinedItems_old() {
-    try {
-        // Access the content of the iframe and retrieve the data
-        const dataDocument = dataFrame.contentDocument || dataFrame.contentWindow.document;
-        const dataScript = dataDocument.getElementById('data');
 
-        if (dataScript) {
-            const items = JSON.parse(dataScript.textContent);
-            allItems = [...items, ...savedUserItems]; // Assign to the globally defined allItems
 
-            // Call displayItems with the current page
-            displayItems(currentPage);
-            updatePageNumbers();
-            updateItemCountLabel();
-        }
-    } catch (error) {
-        console.error("Error collecting data:", error);
-    }
-}
 
-function accessData() {
-    try {
-        const dataDocument = dataFrame.contentDocument || dataFrame.contentWindow.document;
-        const dataScript = dataDocument.getElementById('data');
 
-        if (dataScript) {
-            const items = JSON.parse(dataScript.textContent);
-            console.log("Total items fetched:", items.length); // Debug log
-            predefinedItems = [...items, ...savedUserItems];
-            console.log("Total items fetched including Saved User Items", predefinedItems.length); // Debug log
-            
-            // Store predefinedItems in local storage
-            localStorage.setItem("predefinedItems", JSON.stringify(predefinedItems));
-        
-        }
-    } catch (error) {
-        console.error("Error collecting data:", error);
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const itemsPerPage = 20;
+let currentPage = 0;
+let allItems1 = []; // Declare allItems1 globally or in a higher scope.
 
 function displayItems(page) {
     const start = page * itemsPerPage;
     const end = start + itemsPerPage;
-    const itemsToDisplay = predefinedItems.slice(start, end);
+    const itemsToDisplay = allItems1.slice(start, end);
 
-    const userItemsTable = document.getElementById("preItemsTable");
+    const userItemsTable = document.getElementById("userItemsTable");
     const userItemsTableBody = userItemsTable.querySelector("tbody");
 
     // Clear the table before adding new items
@@ -477,71 +516,51 @@ function displayItems(page) {
     });
 }
 
-function fetchPredefinedItems() {
-
-            // Call displayItems with the current page
-            accessData();
-            displayItems(currentPage);
-            updatePageNumbers(predefinedItems);
-            updateItemCountLabel();
-        
-}
-
-function clickNextButton() {
-    if (currentPage < Math.ceil(predefinedItems.length / itemsPerPage) - 1) {
-        currentPage++;
-        displayItems(currentPage);
-        updatePageNumbers();
-        updateItemCountLabel();
-    }
-}
-
-function clickPrevButton(){
-    if (currentPage > 0) {
-        currentPage--;
-        displayItems(currentPage);
-        updatePageNumbers();
-        updateItemCountLabel();
-    }
-}
- 
-function updateItemCountLabel() {
-    const itemCountLabel = document.getElementById("itemCountLabel");
-
-    const totalItemCount = predefinedItems.length; // Use the length of allItems
-    itemCountLabel.textContent = `Your Items: (${totalItemCount} Items)`;
-}
-        
-        
-
-
 function updatePageNumbers() {
-    const totalPages = Math.ceil(predefinedItems.length / itemsPerPage);
+    const totalPages = Math.ceil(allItems1.length / itemsPerPage);
     const pageNumbersContainer = document.getElementById("pageNumbers");
     pageNumbersContainer.innerHTML = `Page ${currentPage + 1} of ${totalPages}`;
 }
 
+function fetchPredefinedItems() {
+    try {
+        // Access the content of the iframe and retrieve the data
+        const dataDocument = dataFrame.contentDocument || dataFrame.contentWindow.document;
+        const dataScript = dataDocument.getElementById('data');
 
+        if (dataScript) {
+            const items = JSON.parse(dataScript.textContent);
+            allItems1 = [...items, ...savedUserItems]; // Assign to the globally defined allItems1
 
-function fetchUserdefinedItems() {
-
-const userItemsTable = document.getElementById("userItemsTable");
-    const userItemsTableBody = userItemsTable.querySelector("tbody");
-      
-    userItemsTableBody.innerHTML = "";
-
-      //  allItems = [...items, ...savedUserItems];
-        
-        savedUserItems.forEach((item) => {
-            const row = userItemsTableBody.insertRow();
-            
-            row.insertCell(0).textContent = item.name;
-            row.insertCell(1).textContent = item.price || "";
-            row.insertCell(2).textContent = item.quantity || "";
-        });
-        updateItemCountLabel();
-        updatePageNumbers();
-   
+            // Call displayItems with the current page
+            displayItems(currentPage);
+            updatePageNumbers();
+        }
+    } catch (error) {
+        console.error("Error collecting data:", error);
     }
+}
+
+document.getElementById("nextButton").addEventListener("click", () => {
+    if (currentPage < Math.ceil(allItems1.length / itemsPerPage) - 1) {
+        currentPage++;
+        displayItems(currentPage);
+        updatePageNumbers();
+    }
+});
+
+document.getElementById("prevButton").addEventListener("click", () => {
+    if (currentPage > 0) {
+        currentPage--;
+        displayItems(currentPage);
+        updatePageNumbers();
+    }
+});
+
+// Initial display
+fetchPredefinedItems();
+
+
+   
 
 });

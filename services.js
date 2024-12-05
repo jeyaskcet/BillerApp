@@ -96,7 +96,69 @@ function toggleAccordion(event) {
             }
         }
         
+        
+        
 function displaySavedBillHistory() {
+    const billHistoryData = {};
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+
+        // Check if the key starts with "BillHistory_"
+        if (key.startsWith("BillHistory_")) {
+            const billContent = localStorage.getItem(key);
+
+            // Parse the billContent to extract the necessary details
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(billContent, 'text/html');
+            const totalAmount = doc.getElementById('totalAmount').textContent.trim().replace('₹', '');
+            const advanceAmount = doc.getElementById('advanceAmountDisplay').textContent.trim().replace('₹', '');
+            const paymentDue = doc.getElementById('billAmountDue').textContent.trim().replace('₹', '');
+            const paymentStatus = getPaymentStatus(key); // You can set this value dynamically
+
+            // Get the date mentioned in the bill content
+            const currentDateElement = doc.getElementById('currentDate');
+            const dateString = currentDateElement.textContent.trim(); // Assuming it's in a valid date format
+
+            // Create a bill object
+            const bill = {
+                filename: key, // Set the filename to the key
+                totalAmount: totalAmount,
+                paymentDue: paymentDue,
+                advanceAmount: advanceAmount,
+                paymentStatus: paymentStatus,
+                date: dateString, // Store the date from the billContent
+            };
+
+            // Check if a date entry with the same date already exists in the billHistoryData object
+            if (!billHistoryData[dateString]) {
+                billHistoryData[dateString] = [];
+            }
+
+            // Add the bill to the corresponding date entry
+            billHistoryData[dateString].push(bill);
+        }
+    }
+
+    // Display the retrieved bill history data in the UI
+    const billHistory = document.getElementById('billHistory');
+
+    // Loop through the bill history data and create accordion sections
+    for (const dateString in billHistoryData) {
+        if (billHistoryData.hasOwnProperty(dateString)) {
+            const date = dateString;
+            const bills = billHistoryData[dateString];
+
+            const section = createAccordionSection(date, bills);
+            billHistory.appendChild(section);
+        }
+    }
+    displaycalculateBillSummary(billHistoryData);
+    checkTotalBillAmountTally();
+}
+      
+            
+function displaySavedBillHistory_old_fetchingallitemsfromlocal() {
 
     const billHistoryData = {};
 
@@ -174,10 +236,12 @@ function calculateBillSummary(billHistoryData) {
     let paymentDue = 0;
 
     for (const dateString in billHistoryData) {
+    
         if (billHistoryData.hasOwnProperty(dateString)) {
             const bills = billHistoryData[dateString];
             for (const bill of bills) {
                 totalAmount += parseFloat(bill.totalAmount);
+                console.log("Total Amount", totalAmount);
                 advanceAmount += parseFloat(bill.advanceAmount);
               //  paymentDue += parseFloat(bill.paymentDue);                
                 
@@ -377,7 +441,14 @@ function clearAllBillHistory() {
 
     if (confirmation) {
         // User clicked "OK," so proceed with deletion
-        localStorage.clear();
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+
+            // Check if the key starts with "BillHistory_"
+            if (key.startsWith("BillHistory_")) {
+                localStorage.removeItem(key);
+            }
+        }
 
         // Show a message indicating success
         var deleteMessage = document.getElementById("deleteMessage");
@@ -393,6 +464,7 @@ function clearAllBillHistory() {
         // User clicked "Cancel," so do nothing
     }
 }
+
 
 function generateReport() {
     let reportContent = '<html><head><title>Bill Report</title>';
